@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--包扫描-->
+    <context:component-scan base-package="com.coder.**"/>
+
+    <!--阿里巴巴fastjson-->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean id="fastJsonHttpMessageConverter" class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <!--这里不能起反,一定先写text/html，不然ie下出现下载提示-->
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!--开启注解驱动 -->
+    <!--一定要配置到包扫描，alibaba fastjson配置的下面，不然会报406-->
+    <mvc:annotation-driven/>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/" />
+        <property name="suffix" value=".jsp" />
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+    </bean>
+
+    <mvc:interceptors>
+        <!--拦截一切请求-->
+        <!--<bean class="com.coder.intercept.SpringMvcInterceptor" />-->
+        <!--只拦截"/demo"请求-->
+        <mvc:interceptor>
+            <mvc:mapping path="user/interceptor" />
+            <bean class="com.coder.intercept.SpringMvcInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!--Spring处理文件上传-->
+    <!--bean id不要写错，写错会报500-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="1000000" />
+        <property name="maxInMemorySize" value="1000000" />
+        <property name="defaultEncoding" value="utf-8" />
+    </bean>
+
+</beans>

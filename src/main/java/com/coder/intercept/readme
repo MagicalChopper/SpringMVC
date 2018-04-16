@@ -1,0 +1,4 @@
+请求拦截器：
+基于反射 和spring结合紧密 可以拿到ioc容器的bean 不是基于servlet  只会拦截SpringMVC请求
+过滤器：
+依赖于servlet 基于函数回调 基本拦截所有请求
